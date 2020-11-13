@@ -1,10 +1,17 @@
-const path = require("path")
+const path = require("path"),
+    process = require("process"),
+    fs = require("fs")
 
 const { BrowserWindow, app, screen } = require("electron")
 
 class Setup {
-    constructor() {
+    constructor(runDir = path.join(__dirname, "../run")) {
         this.listen()
+
+        this.runDir = runDir
+
+        if (!fs.existsSync(runDir))
+            fs.mkdirSync(runDir, {recursive: true})
     }
 
     setupWindow() {

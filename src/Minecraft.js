@@ -1,42 +1,45 @@
-const nodeConsole = require("console"),
-    process = require("process")
+const events = require("events")
 
-const DiscordPresence = require("./DiscordPresence")
+const DiscordPresence = require("./DiscordPresence"),
+    GuiRenderer = require("./gui/GuiRenderer"),
+    MainMenu = require("./gui/MainMenu"),
+    CanvasPatcher = require("./util/CanvasPatcher")
 
-class Console extends nodeConsole.Console {
-    _console = new nodeConsole.Console(process.stdout, process.stderr)
-
+class Minecraft extends events.EventEmitter {
+    guiRenderer
+    canvases = []
     constructor() {
-        super(process.stdout, process.stderr)
-    }
+        super()
 
-    log(message, ...optionalParams) {
-        this._console.log(`[${new Date().toISOString()}] [Renderer/INFO] ${message}`, ...optionalParams)
-    }
+        try {
+            const canvasPatcher = new CanvasPatcher()
 
-    error(data, ...optionalParams) {
-        this._console.error(`[${new Date().toISOString()}] [Renderer/ERROR] ${data}`, ...optionalParams)
-    }
+            canvasPatcher.patchRoundedRect()
 
-    warn(data, ...optionalParams) {
-        this._console.warn(`[${new Date().toISOString()}] [Renderer/WARN] ${data}`, ...optionalParams)
-    }
-}
+            this.canvases = document.querySelectorAll("canvas")
 
-class Minecraft {
-    constructor() {
-        this.canvases = document.querySelectorAll("canvas")
+            this.setCanvases()
+            this.init()
+            this.guiRenderer = new GuiRenderer(this)
 
-        this.setCanvases()
-        this.init()
-
-        window.console = new Console()
+            this.guiRenderer.addGui(new MainMenu())
+        } catch (err) {
+            console.error(err)
+        }
         window.presence = new DiscordPresence("771792365744291850")
+    }
+
+    draw() {
+        window.requestAnimationFrame(() => {
+            this.emit("render")
+            this.draw()
+        })
     }
 
     init() {
         window.addEventListener("resize", () => {
             this.setCanvases()
+            this.emit("render")
         }, false)
     }
 

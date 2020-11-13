@@ -1,21 +1,15 @@
-const BlurStack = require("../util/StackBlur")
+const Button = require("./Button")
 
-class Button {
-    constructor(x, y, width, height, text = "", center = true, centerText = true) {
-        this.x = x
-        this.y = y
-        this.width = width
-        this.height = height
-        this.text = text.split("").join(String.fromCharCode(8201))
-        this.center = center
-        this.centerText = centerText
+class CloseButton extends Button {
+    constructor(...args) {
+        super(...args)
     }
 
     draw(ctx) {
         const width = window.innerWidth,
             height = window.innerHeight
 
-        ctx.font = "100 16px Helvetica"
+        ctx.font = "100 26px Sherif"
 
         const textDimensions = ctx.measureText(this.text)
 
@@ -25,8 +19,8 @@ class Button {
         const textX = (this.x*width)-(textDimensions.width/2),
             textY = (this.y*height)+(textDimensions.actualBoundingBoxAscent/2)-(textDimensions.actualBoundingBoxDescent/2)
 
-        ctx.fillStyle = "rgba(150, 150, 150, 0.5)"
-        ctx.strokeStyle = "rgba(170, 170, 170, 0.3)"
+        ctx.fillStyle = "rgba(150, 150, 150, 0.3)"
+        ctx.strokeStyle = "rgba(170, 170, 170, 0.2)"
         ctx.lineWidth = 3
         ctx.moveTo(buttonX+this.width/2, buttonY)
         ctx.roundedRect(buttonX, buttonY, this.width, this.height, 5)
@@ -40,4 +34,4 @@ class Button {
     }
 }
 
-module.exports = Button
+module.exports = CloseButton
