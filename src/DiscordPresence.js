@@ -14,7 +14,7 @@ class DiscordPresence {
             this.rpc.setActivity({
                 details: "In the main menu",
                 startTimestamp: new Date().getTime(),
-                largeImageText: `Singularity Client | v${require("../package.json").version}`,
+                largeImageText: `Walmart Client | v${require("../package.json").version}`,
                 largeImageKey: "large"
             })
 
