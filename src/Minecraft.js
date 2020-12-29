@@ -11,21 +11,20 @@ class Minecraft extends events.EventEmitter {
     constructor() {
         super()
 
-        try {
-            const canvasPatcher = new CanvasPatcher()
+        const canvasPatcher = new CanvasPatcher()
 
-            canvasPatcher.patchRoundedRect()
+        canvasPatcher.patchRoundedRect()
 
-            this.canvases = document.querySelectorAll("canvas")
+        this.canvases = document.querySelectorAll("canvas")
 
-            this.setCanvases()
-            this.init()
-            this.guiRenderer = new GuiRenderer(this)
+        this.setCanvases()
+        this.init()
+        this.draw()
+        this.guiRenderer = new GuiRenderer(this)
 
-            this.guiRenderer.addGui(new MainMenu())
-        } catch (err) {
-            console.error(err)
-        }
+        this.guiRenderer.addGui(new MainMenu())
+        this.emit("render")
+
         window.presence = new DiscordPresence("771792365744291850")
     }
 
@@ -39,11 +38,11 @@ class Minecraft extends events.EventEmitter {
     init() {
         window.addEventListener("resize", () => {
             this.setCanvases()
-            this.emit("render")
         }, false)
     }
 
     setCanvases() {
+        this.emit("render")
         for (const canvas of this.canvases) {
             canvas.width = window.innerWidth
             canvas.height = window.innerHeight

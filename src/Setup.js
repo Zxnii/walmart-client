@@ -19,7 +19,7 @@ class Setup {
             width: 780,
             height: 560,
             show: false,
-            title: `Singularity Client | v${require("../package.json").version}`,
+            title: `Walmart Client | v${require("../package.json").version}`,
             icon: path.join(__dirname, "../res/icons/icon.png"),
             webPreferences: {
                 nodeIntegration: true,
