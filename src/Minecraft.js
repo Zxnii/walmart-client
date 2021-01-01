@@ -8,6 +8,7 @@ const DiscordPresence = require("./DiscordPresence"),
 class Minecraft extends events.EventEmitter {
     guiRenderer
     canvases = []
+    frameCount = 0
     constructor() {
         super()
 
@@ -22,16 +23,17 @@ class Minecraft extends events.EventEmitter {
         this.draw()
         this.guiRenderer = new GuiRenderer(this)
 
-        this.guiRenderer.addGui(new MainMenu())
+        this.guiRenderer.addGui(new MainMenu(this.guiRenderer))
         this.emit("render")
 
         window.presence = new DiscordPresence("771792365744291850")
     }
 
-    draw() {
+    draw(force) {
         window.requestAnimationFrame(() => {
-            this.emit("render")
+            this.emit("render", this.frameCount <= 3)
             this.draw()
+            this.frameCount++
         })
     }
 
@@ -42,7 +44,8 @@ class Minecraft extends events.EventEmitter {
     }
 
     setCanvases() {
-        this.emit("render")
+        this.emit("render", true)
+        this.frameCount = 0
         for (const canvas of this.canvases) {
             canvas.width = window.innerWidth
             canvas.height = window.innerHeight

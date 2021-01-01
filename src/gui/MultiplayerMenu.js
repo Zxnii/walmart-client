@@ -7,11 +7,10 @@ const Gui = require("./Gui"),
     Button = require("./Button"),
     ImageLoader = require("../util/ImageLoader"),
     BlurStack = require("../util/StackBlur"),
-    GuiInputHandler = require("./GuiInputHandler"),
-    MultiplayerMenu = require("./MultiplayerMenu")
+    GuiInputHandler = require("./GuiInputHandler")
 
-class MainMenu extends Gui {
-    constructor(guiRenderer) {
+class MultiplayerMenu extends Gui {
+    constructor(guiRenderer, MainMenu) {
         super()
 
         this.guiRenderer = guiRenderer
@@ -19,40 +18,25 @@ class MainMenu extends Gui {
         this.image = this.imageLoader.loadImageFromFile(path.join(__dirname, "../../res/splash/default.png"), "image/png")
         this.blurStack = new BlurStack()
         this.inputHandler = new GuiInputHandler(this)
-
+        
         this.addGuiElement(new Button({
-            x: 0,
-            y: -25,
-            width: 370,
+            width: 100,
             height: 40,
-            text: "Single Player",
+            x: 0,
+            y: -60,
             relative: {
                 x: 0.5,
-                y: 0.5
+                y: 1
             },
-            inputHandler: this.inputHandler,
-            click: () => {
-
-            }
-        }))
-        this.addGuiElement(new Button({
-            x: 0,
-            y: 25,
-            width: 370,
-            height: 40,
-            text: "Multiplayer",
-            relative: {
-                x: 0.5,
-                y: 0.5
-            },
+            text: "Back",
             inputHandler: this.inputHandler,
             click: () => {
                 this.guiRenderer.removeGui(this)
                 this.inputHandler.freeListeners()
-                this.guiRenderer.addGui(new MultiplayerMenu(this.guiRenderer, MainMenu))
+                this.guiRenderer.addGui(new MainMenu(this.guiRenderer))
 
                 const activity = window.presence.getActivity()                
-                activity.details = "In the multiplayer menu"
+                activity.details = "In the main menu"
                 window.presence.setActivity(activity)
             }
         }))
@@ -70,7 +54,6 @@ class MainMenu extends Gui {
                 window.close()
             }
         }))
-        //this.addGuiElement(new RawText(0, 1, "Walmart Client", {x: 0.5, y: 0.5}, "500 36px Comic Sans MS"))
     }
 
     draw(ctx) {
@@ -78,8 +61,11 @@ class MainMenu extends Gui {
             height = window.innerHeight
         ctx.drawImage(this.image, (width/2)-(this.image.width/2), (height/2)-(this.image.height/2))
         this.blurStack.stackBlurCanvasRGBA(ctx, 0, 0, window.innerWidth, window.innerHeight, 15)
+        this.blurStack.stackBlurCanvasRGBA(ctx, 0, window.innerHeight-120, window.innerWidth, 120, 100)
+        ctx.fillStyle = "rgba(150, 150, 150, 0.3)"
+        ctx.fillRect(0, window.innerHeight-120, window.innerWidth, 120)
         this.drawElements(ctx)
     }
 }
 
-module.exports = MainMenu
+module.exports = MultiplayerMenu

@@ -10,14 +10,16 @@ class Setup {
 
         this.runDir = runDir
 
-        if (!fs.existsSync(runDir))
-            fs.mkdirSync(runDir, {recursive: true})
+        //if (!fs.existsSync(runDir))
+        //    fs.mkdirSync(runDir, {recursive: true})
     }
 
     setupWindow() {
+        const width = screen.getPrimaryDisplay().workArea.width*0.8
+        const height = width*(9/16)
         const window = new BrowserWindow({
-            width: 780,
-            height: 560,
+            width: width,
+            height: height,
             show: false,
             title: `Walmart Client | v${require("../package.json").version}`,
             icon: path.join(__dirname, "../res/icons/icon.png"),
@@ -25,7 +27,8 @@ class Setup {
                 nodeIntegration: true,
                 nodeIntegrationInWorker: true,
                 navigateOnDragDrop: false,
-                webgl: true
+                webgl: true,
+                enableRemoteModule: true
             }
         })
 
